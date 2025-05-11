@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="h-100 bg-dark">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col">
+        <div class="card card-registration my-4">
+          <div class="row g-0">
+            <div class="col-xl-6 d-none d-xl-block">
+              <img src="{% static 'grossiste/images/topics/login.jpg'%}" alt="Sample photo" class="img-fluid"
+                style="border-top-left-radius: .25rem; border-bottom-left-radius: .25rem;" />
+            </div>
+            <div class="col-xl-6">
+              <div class="card-body p-md-5 text-black">
+                <h3 class="text-center mb-5 text-uppercase">Formulaire d'inscription</h3>
+
+                <div class="col-xl-200">
+                  <div class="card">
+                      <div class="card-body">
+                        <form method="post" action="{% url 'login' %}">
+                          {% csrf_token %}
+                          <div class="row">
+                            <!-- Catégorie d'utilisateur -->
+                            <div class="col-md-12 mb-4">
+                              <div class="form-outline">
+                                <select class="form-control form-control-lg" name="user_type" id="user_type" required>
+                                  <option value="" disabled selected>Choisissez votre catégorie</option>
+                                  <option value="grossiste">Grossiste</option>
+                                  <option value="detailant">Détaillant</option>
+                                  <option value="producteur">Producteur Local</option>
+                                </select>
+                                <label class="form-label" for="user_type">Catégorie d'utilisateur</label>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="row">
+                            <div class="col-md-6 mb-4">
+                              <div class="form-outline">
+                                <input type="text" id="form3Example1m" class="form-control form-control-lg" name="last_name" required />
+                                <label class="form-label" for="form3Example1m">Nom</label>
+                              </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                              <div class="form-outline">
+                                <input type="text" id="form3Example1n" class="form-control form-control-lg" name="first_name" required />
+                                <label class="form-label" for="form3Example1n">Prénom</label>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="form-outline mb-4">
+                            <input type="text" id="form3Example97" class="form-control form-control-lg" name="username" required />
+                            <label class="form-label" for="form3Example97">Nom d'utilisateur</label>
+                          </div>
+
+                          <div class="form-outline mb-4">
+                            <input type="email" id="form3ExampleEmail" class="form-control form-control-lg" name="email" required />
+                            <label class="form-label" for="form3ExampleEmail">Adresse email</label>
+                          </div>
+
+                          <div class="form-outline mb-4">
+                            <input type="password" id="form3ExamplePassword" class="form-control form-control-lg" name="password1" required />
+                            <label class="form-label" for="form3ExamplePassword">Mot de passe</label>
+                          </div>
+
+                          <div class="form-outline mb-4">
+                            <input type="password" id="form3ExampleConfirmPassword" class="form-control form-control-lg" name="password2" required />
+                            <label class="form-label" for="form3ExampleConfirmPassword">Confirmez le mot de passe</label>
+                          </div>
+
+                          <!-- Champ spécifique selon la catégorie -->
+                          <div id="grossiste_fields" class="category-fields" style="display: none;">
+                            <div class="form-outline mb-4">
+                              <textarea id="form3ExampleGrossiste" class="form-control form-control-lg" name="company_description" placeholder="Décrivez votre entreprise" rows="3"></textarea>
+                              <label class="form-label" for="form3ExampleGrossiste">Description de l'entreprise</label>
+                            </div>
+                          </div>
+
+                          <div id="detailant_fields" class="category-fields" style="display: none;">
+                            <div class="form-outline mb-4">
+                              <input type="text" id="form3ExampleProducts" class="form-control form-control-lg" name="products_interest" placeholder="Ex : Alimentation, Vêtements, Électronique" />
+                              <label class="form-label" for="form3ExampleProducts">Types de produits recherchés</label>
+                            </div>
+                          </div>
+
+                          <div id="producteur_fields" class="category-fields" style="display: none;">
+                            <div class="form-outline mb-4">
+                              <input type="text" id="form3ExampleProductType" class="form-control form-control-lg" name="product_type" placeholder="Ex : Fruits, Artisanat" />
+                              <label class="form-label" for="form3ExampleProductType">Type de produits</label>
+                            </div>
+                          </div>
+
+                          <!-- Conditions d'utilisation -->
+                          <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="termsCheck" required />
+                            <label class="form-check-label" for="termsCheck">
+                              J'accepte les <a href="" target="_blank">conditions d'utilisation</a>
+                            </label>
+                          </div>
+
+                          <div class="col-12 mb-4">
+                            <button class="btn btn-primary w-100 py-3" type="submit">Enregistrer</button>
+                          </div>
+                        </form>
+
+                        <p class="text-center">Vous êtes déjà inscrit ? <a href="{% url 'login' %}">Connexion</a></p>
+                      </div>
+                   </div>
+
+                </div>
+               </div>
+              </div>
+                
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Script pour afficher les champs spécifiques à la catégorie sélectionnée
+  document.getElementById('user_type').addEventListener('change', function() {
+    var category = this.value;
+    
+    // Cacher tous les champs
+    document.querySelectorAll('.category-fields').forEach(function(field) {
+      field.style.display = 'none';
+    });
+
+    // Afficher les champs de la catégorie sélectionnée
+    if (category === 'grossiste') {
+      document.getElementById('grossiste_fields').style.display = 'block';
+    } else if (category === 'detailant') {
+      document.getElementById('detailant_fields').style.display = 'block';
+    } else if (category === 'producteur') {
+      document.getElementById('producteur_fields').style.display = 'block';
+    }
+  });
+</script>
+
+{% endblock %}

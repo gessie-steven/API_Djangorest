@@ -1,0 +1,501 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+<section class="hero-section d-flex justify-content-center align-items-center" id="section_1">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-12 mx-auto">
+                <h1 class="text-white text-center">Explorez. Apprenez. Évoluez.</h1>
+                <h6 class="text-center">Une plateforme dédiée aux entrepreneurs et commerçants du Sénégal</h6>
+
+                <form method="get" class="custom-form mt-4 pt-2 mb-lg-0 mb-5" role="search">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text bi-search" id="basic-addon1"></span>
+                        <input name="keyword" type="search" class="form-control" id="keyword" placeholder="Épicerie, Textile, Électronique, Agriculture..." aria-label="Search" value="{{ request.GET.keyword }}">
+                        <button type="submit" class="form-control">Rechercher</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="featured-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-4 col-12 mb-4 mb-lg-0">
+                <div class="custom-block bg-white shadow-lg">
+                    <a href="#section_2">
+                        <div class="d-flex">
+                            <div>
+                                <h5 class="mb-2">Produits en Gros</h5>
+                                <p class="mb-0">Accédez à une large gamme de produits en gros aux meilleurs prix pour booster votre activité.</p>
+                            </div>
+                            <span class="badge bg-design rounded-pill ms-auto">{{ produits.count }}</span>
+                        </div>
+                        <img src="{% static 'grossiste/images/topics/undraw_Remote_design_team_re_urdx.png'%}" class="custom-block-image img-fluid" alt="">
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-12">
+                <div class="custom-block custom-block-overlay">
+                    <div class="d-flex flex-column h-100">
+                        <img src="{% static 'grossiste/images/businesswoman-using-tablet-analysis.jpg'%}" class="custom-block-image img-fluid" alt="">
+
+                        <div class="custom-block-overlay-text d-flex">
+                            <div>
+                                <h5 class="text-white mb-2">Catégories Diversifiées</h5>
+                                <p class="text-white">Découvrez nos différentes catégories de produits pour répondre à tous vos besoins.</p>
+                                <a href="#section_2" class="btn custom-btn mt-2 mt-lg-3">Explorer</a>
+                            </div>
+                            <span class="badge bg-finance rounded-pill ms-auto">{{ categories.count }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="explore-section section-padding" id="section_2">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="mb-4">Parcourez Nos Catégories</h2>
+                <p>Découvrez une large gamme de produits en gros, de l'alimentation à la mode,<br>
+                     en passant par l'électronique et la décoration pour la maison.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                {% for categorie in categories %}
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link {% if forloop.first %}active{% endif %}" 
+                            id="{{ categorie.nom|slugify }}-tab" 
+                            data-bs-toggle="tab" 
+                            data-bs-target="#{{ categorie.nom|slugify }}-tab-pane" 
+                            type="button" 
+                            role="tab" 
+                            aria-controls="{{ categorie.nom|slugify }}-tab-pane" 
+                            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">
+                        {{ categorie.nom }}
+                    </button>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="tab-content" id="myTabContent">
+                    {% for categorie in categories %}
+                    <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" 
+                         id="{{ categorie.nom|slugify }}-tab-pane" 
+                         role="tabpanel" 
+                         aria-labelledby="{{ categorie.nom|slugify }}-tab" 
+                         tabindex="0">
+                        <div class="row">
+                            {% for produit in produits %}
+                            {% if produit.categorie == categorie %}
+                            <div class="col-lg-4 col-md-6 col-12 mb-4">
+                                <div class="custom-block bg-white shadow-lg">
+                                    <a href="#">
+                                        <div class="d-flex">
+                                            <div>
+                                                <h5 class="mb-2">{{ produit.nom }}</h5>
+                                                <p class="mb-0">{{ produit.description|truncatewords:10 }}</p>
+                                                <p class="mb-0 mt-2 text-primary fw-bold">{{ produit.prix }} FCFA</p>
+                                            </div>
+                                        </div>
+                                        {% if produit.image %}
+                                        <img src="{{ produit.image.url }}" class="custom-block-image img-fluid" alt="{{ produit.nom }}">
+                                        {% else %}
+                                        <img src="{% static 'produits/default.png' %}" class="custom-block-image img-fluid" alt="{{ produit.nom }}">
+                                        {% endif %}
+                                    </a>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% empty %}
+                            <div class="col-12">
+                                <p class="text-center">Aucun produit disponible dans cette catégorie pour le moment.</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="timeline-section section-padding" id="section_3">
+    <div class="section-overlay"></div>
+  
+    <div class="container">
+      <div class="row">
+  
+        <div class="col-12 text-center">
+          <h2 class="text-white mb-4">Comment entrer en contact avec un fournisseur ?</h2>
+        </div>
+  
+        <div class="col-lg-10 col-12 mx-auto">
+          <div class="timeline-container">
+            <ul class="vertical-scrollable-timeline" id="vertical-scrollable-timeline">
+              <div class="list-progress">
+                <div class="inner"></div>
+              </div>
+  
+              <li>
+                <h4 class="text-white mb-3">Trouvez un fournisseur</h4>
+  
+                <p class="text-white">Commencez par parcourir notre plateforme pour trouver des fournisseurs qui correspondent à vos besoins. Utilisez les filtres de recherche pour affiner les résultats en fonction du type de produits, de la localisation ou de la catégorie.</p>
+  
+                <div class="icon-holder">
+                  <i class="bi-search"></i>
+                </div>
+              </li>
+              
+              <li>
+                <h4 class="text-white mb-3">Vérifiez le profil du fournisseur</h4>
+  
+                <p class="text-white">Chaque fournisseur sur la plateforme dispose d'un profil détaillé, incluant des informations sur ses produits, son entreprise et ses conditions de vente. Prenez le temps de lire les avis des autres détaillants pour avoir un aperçu de la qualité du service.</p>
+  
+                <div class="icon-holder">
+                  <i class="bi-person-lines-fill"></i>
+                </div>
+              </li>
+  
+              <li>
+                <h4 class="text-white mb-3">Contactez directement le fournisseur</h4>
+  
+                <p class="text-white">Une fois que vous avez sélectionné un fournisseur, vous pouvez entrer en contact avec lui directement via notre plateforme. Vous pouvez soit lui envoyer un message via notre système de messagerie interne, soit utiliser les informations de contact fournies sur son profil (numéro de téléphone, e-mail, etc.).</p>
+  
+                <div class="icon-holder">
+                  <i class="bi-chat-dots-fill"></i>
+                </div>
+              </li>
+  
+              <li>
+                <h4 class="text-white mb-3">Négociez les conditions</h4>
+  
+                <p class="text-white">Après avoir établi le contact, vous pouvez discuter des prix, des quantités et des modalités de livraison avec le fournisseur. N'hésitez pas à négocier et à poser des questions sur les conditions de vente avant de passer votre commande.</p>
+  
+                <div class="icon-holder">
+                  <i class="bi-pencil-square"></i>
+                </div>
+              </li>
+  
+              <li>
+                <h4 class="text-white mb-3">Finalisez votre commande</h4>
+  
+                <p class="text-white">Une fois que vous êtes d'accord avec les conditions, vous pouvez finaliser votre commande directement via la plateforme, en toute sécurité. Vous recevrez les informations nécessaires pour effectuer le paiement et la livraison.</p>
+  
+                <div class="icon-holder">
+                  <i class="bi-check-circle-fill"></i>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+  
+        <div class="col-12 text-center mt-5">
+          <p class="text-white">
+            Vous voulez en savoir plus ?
+            <a href="#" class="btn custom-btn custom-border-btn ms-3">Visitez notre FAQ</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+
+
+            <section class="faq-section section-padding" id="section_4">
+                <div class="container">
+                  <div class="row">
+              
+                    <div class="col-lg-6 col-12">
+                      <h2 class="mb-4">Questions Fréquentes</h2>
+                    </div>
+              
+                    <div class="clearfix"></div>
+              
+                    <div class="col-lg-5 col-12">
+                      <img src="{% static 'grossiste/images/faq_graphic.jpg'%}" class="img-fluid" alt="FAQs">
+                    </div>
+              
+                    <div class="col-lg-6 col-12 m-auto">
+                      <div class="accordion" id="accordionExample">
+                        
+                        <!-- FAQ 1 : Pour les grossistes -->
+                        <div class="accordion-item">
+                          <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                              Comment puis-je rejoindre la plateforme en tant que grossiste ?
+                            </button>
+                          </h2>
+              
+                          <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                              Pour rejoindre notre plateforme, vous devez vous inscrire en tant que grossiste, remplir le formulaire avec vos informations d'entreprise et fournir des détails sur vos produits et votre capacité à fournir des détaillants.
+                            </div>
+                          </div>
+                        </div>
+              
+                        <!-- FAQ 2 : Pour les détaillants -->
+                        <div class="accordion-item">
+                          <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                              En tant que détaillant, comment puis-je trouver des fournisseurs fiables ?
+                            </button>
+                          </h2>
+              
+                          <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                              Notre plateforme vous permet de parcourir un large éventail de grossistes et de producteurs locaux. Vous pouvez facilement accéder à des fournisseurs fiables en utilisant les filtres de recherche ou en consultant les avis d'autres commerçants.
+                            </div>
+                          </div>
+                        </div>
+              
+                        <!-- FAQ 3 : Pour les producteurs locaux -->
+                        <div class="accordion-item">
+                          <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                              Comment les producteurs locaux peuvent-ils vendre leurs produits ?
+                            </button>
+                          </h2>
+              
+                          <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                              Les producteurs locaux peuvent s'inscrire sur notre plateforme, créer un profil d'entreprise et ajouter leurs produits à vendre. Cela permettra aux détaillants et grossistes de découvrir et d'acheter directement auprès de vous.
+                            </div>
+                          </div>
+                        </div>
+              
+                        <!-- FAQ 4 : Généralité sur la plateforme -->
+                        <div class="accordion-item">
+                          <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                              La plateforme est-elle gratuite ?
+                            </button>
+                          </h2>
+              
+                          <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                              L'inscription sur notre plateforme est gratuite pour tous les utilisateurs. Cependant, des frais peuvent s'appliquer pour des services premium, tels que la mise en avant des produits ou des fonctionnalités spécifiques.
+                            </div>
+                          </div>
+                        </div>
+              
+                      </div>
+                    </div>
+              
+                  </div>
+                </div>
+              </section>
+
+              {# Ajoutez après la section featured-section #}
+<section class="benefits-section section-padding">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2>Pourquoi choisir Sengrossiste ?</h2>
+                <p class="lead">Notre plateforme offre des avantages exclusifs pour votre business</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="benefit-card text-center p-4">
+                    <i class="bi bi-truck fs-1 text-primary"></i>
+                    <h5 class="my-3">Livraison Rapide</h5>
+                    <p>Réseau de transporteurs partenaires pour des livraisons partout au Sénégal</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="benefit-card text-center p-4">
+                    <i class="bi bi-shield-check fs-1 text-primary"></i>
+                    <h5 class="my-3">Transactions Sécurisées</h5>
+                    <p>Système de paiement vérifié et protégé contre les fraudes</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="benefit-card text-center p-4">
+                    <i class="bi bi-people fs-1 text-primary"></i>
+                    <h5 class="my-3">Communauté Active</h5>
+                    <p>Plus de 5000 commerçants et 200 fournisseurs déjà inscrits</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="testimonials-section section-padding bg-light">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h2>Témoignages</h2>
+                <p>Découvrez ce que disent nos utilisateurs</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="testimonial-card p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="{% static 'grossiste/images/avatar1.jpg' %}" 
+                             class="rounded-circle me-3" 
+                             alt="Client" 
+                             width="60">
+                        <div>
+                            <h6>Mariama Diop</h6>
+                            <p class="text-muted small mb-0">Épicerie, Dakar</p>
+                        </div>
+                    </div>
+                    <p class="mb-0">"Cette plateforme m'a permis de trouver des fournisseurs fiables et de développer mon chiffre d'affaires."</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="testimonial-card p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="{% static 'grossiste/images/avatar2.jpg' %}" 
+                             class="rounded-circle me-3" 
+                             alt="Client" 
+                             width="60">
+                        <div>
+                            <h6>Papa Diallo</h6>
+                            <p class="text-muted small mb-0">Textile, Thiès</p>
+                        </div>
+                    </div>
+                    <p class="mb-0">"Des prix très compétitifs et un service client réactif. Je recommande !"</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="testimonial-card p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="{% static 'grossiste/images/avatar3.jpg' %}" 
+                             class="rounded-circle me-3" 
+                             alt="Client" 
+                             width="60">
+                        <div>
+                            <h6>Aïssatou Fall</h6>
+                            <p class="text-muted small mb-0">Cosmétiques, Saint-Louis</p>
+                        </div>
+                    </div>
+                    <p class="mb-0">"Simplifie vraiment mes approvisionnements. Gain de temps considérable."</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="newsletter-section section-padding">
+    <div class="container text-center">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <h3 class="mb-4">Restez informé</h3>
+                <p class="mb-4">Abonnez-vous à notre newsletter pour recevoir les dernières actualités et offres spéciales</p>
+                
+                <form class="newsletter-form">
+                    <div class="input-group mb-3">
+                        <input type="email" 
+                               class="form-control" 
+                               placeholder="Entrez votre email"
+                               aria-label="Email">
+                        <button class="btn btn-primary" type="button">
+                            S'abonner
+                        </button>
+                    </div>
+                    <small class="text-muted">Nous ne partageons jamais votre email avec des tiers</small>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+              
+
+
+            <section class="contact-section section-padding section-bg" id="section_5">
+                <div class="container">
+                    <div class="row">
+
+                        <div class="col-lg-12 col-12 text-center">
+                            <h2 class="mb-5">Get in touch</h2>
+                        </div>
+
+                        <div class="col-lg-5 col-12 mb-4 mb-lg-0">
+                            <iframe class="google-map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2595.065641062665!2d-122.4230416990949!3d37.80335401520422!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80858127459fabad%3A0x808ba520e5e9edb7!2sFrancisco%20Park!5e1!3m2!1sen!2sth!4v1684340239744!5m2!1sen!2sth" width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        </div>
+
+                        <div class="col-lg-3 col-md-6 col-12 mb-3 mb-lg- mb-md-0 ms-auto">
+                            <h4 class="mb-3">Head office</h4>
+
+                            <p>Rue OKM 321, Ouakam cité avion - Dakar</p>
+
+                            <hr>
+
+                            <p class="d-flex align-items-center mb-1">
+                                <span class="me-2">Phone</span>
+
+                                <a href="tel: +221 77 290 1256" class="site-footer-link">
+                                    +221 77 290 1256
+                                </a>
+                            </p>
+
+                            <p class="d-flex align-items-center">
+                                <span class="me-2">Email</span>
+
+                                <a href="mailto:contact@sengrossiste.com" class="site-footer-link">
+                                    contact@sengrossiste.com
+                                </a>
+                            </p>
+                        </div>
+
+                        <div class="col-lg-3 col-md-6 col-12 mx-auto">
+                            <h4 class="mb-3">Bureau principal</h4>
+
+                            <p>Rond Point Almadies, Ngor virage</p>
+
+                            <hr>
+
+                            <p class="d-flex align-items-center mb-1">
+                                <span class="me-2">Phone</span>
+
+                                <a href="tel: 110-220-3400" class="site-footer-link">
+                                    110-220-3400
+                                </a>
+                            </p>
+
+                            <p class="d-flex align-items-center">
+                                <span class="me-2">Email</span>
+
+                                <a href="mailto:info@company.com" class="site-footer-link">
+                                    contact@sengrossiste.com
+                                </a>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        
+        {% endblock%}
+
